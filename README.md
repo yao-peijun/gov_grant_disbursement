@@ -10,13 +10,13 @@
 
 ### Database (MySQL)
 1. import tables: (1) household and (2) familyMember to MySQL
-2. files: household.sql and familyMember.sql @ folder: <<project folder path>>/set_up
+2. files: household.sql and familyMember.sql @ folder: <project folder path>/set_up
 
 ### APIs Deployment
 
 #### Primary method: Run using executable binary file: gov_grant_disbursement.exe
 1. Git Bash @ root of project folder
-2. Change DB connection settings @ <<project folder path>>/conf/app.conf
+2. Change DB connection settings @ <project folder path>/conf/app.conf
 Default settings are as follow:
 - mysqlurls = 127.0.0.1:3306
 - mysqldb = household
@@ -26,8 +26,8 @@ Default settings are as follow:
 4. http server will run @ ip address: "http://127.0.0.1:8080" or "http://localhost:8080" in default
 
 Remarks:
-- change to another ip address or port by changing "httpaddr" or "httpport" in <<project folder path>>/conf/app.conf
-- gov_grant_disbursement.exe need to be executed with folder: <<project folder path>>/conf at the same root
+- change to another ip address or port by changing "httpaddr" or "httpport" in <project folder path>/conf/app.conf
+- gov_grant_disbursement.exe need to be executed with folder: <project folder path>/conf at the same root
 
 #### Alternative method: Compile and Run
 1. Place project folder @ $GOPATH/src
@@ -77,7 +77,7 @@ Remarks:
 - annualIncome need to be provided if occupationType is "Employed"
 - DOB should be in format DD-MM-YYYY
 
-#### body (full)
+#### sample body
 ```json
 {
   "name": "Mary",
@@ -103,7 +103,7 @@ Remarks:
 
 ### 1. List households
 
-#### Endpoint: <<ip address>>/api/household/:householdID
+#### Endpoint: <ip address>/api/household/:householdID
 
 #### sample output
 ```json
@@ -161,7 +161,7 @@ Remarks:
 
 ### 2. Show household
 
-#### Endpoint: <<ip address>>/api/household/all
+#### Endpoint: <ip address>/api/household/all
 
 #### output
 ```json
@@ -186,7 +186,7 @@ Remarks:
 
 ### 3. Search for households and recipients of grant disbursement
 
-#### Endpoint: <<ip address>>/api/grants/?:household/?:totalIncome
+#### Endpoint: <ip address>/api/grants?household=<size>&totalIncome=<income>
 
 #### Assumptions
 - household display should met requirement of "household size" and "total income" provided and filtered based on the criteria provided
@@ -235,7 +235,7 @@ Remarks:
 
 ### 1. Delete Household
 
-#### Endpoint: <<ip address>>/api/household/:householdID
+#### Endpoint: <ip address>/api/household/:householdID
 
 Family member with the same householdID will deleted together
 
@@ -248,7 +248,7 @@ Family member with the same householdID will deleted together
 
 ### 2. Delete Family Member
 
-#### Endpoint: <<ip address>>/api/familyMember/:familyMemberID
+#### Endpoint: <ip address>/api/familyMember/:familyMemberID
 
 #### success output
 ```json
