@@ -120,6 +120,31 @@ Remarks:
 ```json
 [
   {
+    "householdID": 8,
+    "householdType": "hdb",
+    "familyMembers": [
+      {
+        "familyMemberID": 15,
+        "name": "student1",
+        "gender": "F",
+        "maritalStatus": "single",
+        "occupationType": "student",
+        "annualIncome": 0,
+        "DOB": "2010-01-12"
+      }
+    ]
+  }
+]
+```
+
+### 2. Show household
+
+#### Endpoint: /api/household/all
+
+#### sample output
+```json
+[
+  {
     "householdID": 6,
     "householdType": "landed",
     "familyMembers": [
@@ -164,31 +189,6 @@ Remarks:
         "occupationType": "unemployed",
         "annualIncome": 0,
         "DOB": "1945-01-31"
-      }
-    ]
-  }
-]
-```
-
-### 2. Show household
-
-#### Endpoint: /api/household/all
-
-#### output
-```json
-[
-  {
-    "householdID": 8,
-    "householdType": "hdb",
-    "familyMembers": [
-      {
-        "familyMemberID": 15,
-        "name": "student1",
-        "gender": "F",
-        "maritalStatus": "single",
-        "occupationType": "student",
-        "annualIncome": 0,
-        "DOB": "2010-01-12"
       }
     ]
   }
