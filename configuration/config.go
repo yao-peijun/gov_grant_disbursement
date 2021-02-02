@@ -101,7 +101,7 @@ func ErrorMsg() ErrorMsgStruct {
 		InvalidDOB:          `D.O.B should not be empty and should be in format of DD-MM-YYYY`,
 		InvalidAnnualIncome: `Annual income should not be empty and should not be negative value`,
 		InvalidHousehold: `Invalid household input. Input data should contain only ` +
-			models.Household().Landed + `, ` + models.Household().Condominium + `or ` + models.Household().HDB + `.`,
+			models.Household().Landed + `, ` + models.Household().Condominium + ` or ` + models.Household().HDB + `.`,
 		InvalidOccupation: `Invalid occupation type input. Input data should contain only ` +
 			models.OccupationType().Employed + `, ` + models.OccupationType().Unemployed + ` or ` + models.OccupationType().Student + `.`,
 		InvalidGender: `Invalid gender input. Input data should contain only ` +
