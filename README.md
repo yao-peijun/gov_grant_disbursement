@@ -10,23 +10,22 @@
 
 ### Database (MySQL)
 1. import tables: (1) household and (2) familyMember to MySQL
-2. files: household.sql and familyMember.sql @ folder: project_folder_path/set_up
+2. files: household_household.sql and household_familyMember.sql @ folder: project_folder_path/set_up
 
 ### APIs Deployment
 
 #### Primary method: Run using executable binary file: gov_grant_disbursement.exe
-1. Git Bash @ root of project folder
-2. Change DB connection settings @ project_folder_path/conf/app.conf
-Default settings are as follow:
+1. Change DB connection settings @ project_folder_path/conf/app.conf. Default settings are as follow:
 - mysqlurls = 127.0.0.1:3306
 - mysqldb = household
 - mysqluser = root
 - mysqlpass = root
+2. Git Bash @ root of project folder
 3. command: ./gov_grant_disbursement.exe
 4. http server will run @ ip address: "http://127.0.0.1:8080" or "http://localhost:8080" in default
 
 Remarks:
-- change to another ip address or port by changing "httpaddr" or "httpport" in project_folder_path/conf/app.conf
+- host http server using another ip address or port by changing "httpaddr" or "httpport" in project_folder_path/conf/app.conf
 - gov_grant_disbursement.exe need to be executed with folder: project_folder_path/conf at the same root
 
 #### Alternative method: Compile and Run
