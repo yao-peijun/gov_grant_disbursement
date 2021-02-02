@@ -2,9 +2,21 @@
 
 ## Content
 1. Set-up
-2. Create APIs
+- Database
+- Host HTTP Server
+
+2. Create APIs 
+- /api/household
+- /api/household/:householdID/familyMember
+
 3. Query APIs
+- /api/household/:householdID
+- /api/household/all
+- /api/grants?household=size&totalIncome=income
+
 4. Delete APIs
+- /api/household/:householdID
+- /api/familyMember/:familyMemberID
 
 ## Set-up
 
@@ -12,7 +24,7 @@
 1. import tables: (1) household and (2) familyMember to MySQL
 2. files: household_household.sql and household_familyMember.sql @ folder: project_folder_path/set_up
 
-### APIs Deployment
+### Host HTTP Server
 
 #### Primary method: Run using executable binary file: gov_grant_disbursement.exe
 1. Change DB connection settings @ project_folder_path/conf/app.conf. Default settings are as follow:
