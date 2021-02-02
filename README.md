@@ -119,21 +119,48 @@ Remarks:
 #### sample output
 ```json
 [
-  {
-    "householdID": 8,
-    "householdType": "hdb",
-    "familyMembers": [
-      {
-        "familyMemberID": 15,
-        "name": "student1",
-        "gender": "F",
-        "maritalStatus": "single",
-        "occupationType": "student",
-        "annualIncome": 0,
-        "DOB": "2010-01-12"
-      }
-    ]
-  }
+    {
+        "householdID": 9,
+        "householdType": "hdb",
+        "familyMembers": [
+            {
+                "familyMemberID": 16,
+                "name": "mother2",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "1988-01-31"
+            },
+            {
+                "familyMemberID": 17,
+                "name": "father2",
+                "gender": "M",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "1988-01-31"
+            },
+            {
+                "familyMemberID": 18,
+                "name": "child",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2005-02-28"
+            },
+            {
+                "familyMemberID": 19,
+                "name": "kid",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2016-02-28"
+            }
+        ]
+    }
 ]
 ```
 
@@ -144,54 +171,143 @@ Remarks:
 #### sample output
 ```json
 [
-  {
-    "householdID": 6,
-    "householdType": "landed",
-    "familyMembers": [
-      {
-        "familyMemberID": 8,
-        "name": "child",
-        "gender": "F",
-        "maritalStatus": "single",
-        "occupationType": "student",
-        "annualIncome": 0,
-        "DOB": "2018-01-12"
-      },
-      {
-        "familyMemberID": 9,
-        "name": "mother",
-        "gender": "F",
-        "maritalStatus": "married",
-        "occupationType": "employed",
-        "annualIncome": 50000,
-        "DOB": "2000-01-12"
-      },
-      {
-        "familyMemberID": 10,
-        "name": "father",
-        "gender": "F",
-        "maritalStatus": "married",
-        "occupationType": "employed",
-        "annualIncome": 50000,
-        "DOB": "2000-01-12"
-      }
-    ]
-  },
-  {
-    "householdID": 10,
-    "householdType": "hdb",
-    "familyMembers": [
-      {
-        "familyMemberID": 15,
-        "name": "elderly",
-        "gender": "M",
-        "maritalStatus": "single",
-        "occupationType": "unemployed",
-        "annualIncome": 0,
-        "DOB": "1945-01-31"
-      }
-    ]
-  }
+    {
+        "householdID": 6,
+        "householdType": "landed",
+        "familyMembers": [
+            {
+                "familyMemberID": 8,
+                "name": "child",
+                "gender": "F",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2003-02-28"
+            },
+            {
+                "familyMemberID": 9,
+                "name": "mother",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "2000-01-31"
+            },
+            {
+                "familyMemberID": 10,
+                "name": "father",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "2000-01-31"
+            }
+        ]
+    },
+    {
+        "householdID": 8,
+        "householdType": "hdb",
+        "familyMembers": null
+    },
+    {
+        "householdID": 9,
+        "householdType": "hdb",
+        "familyMembers": [
+            {
+                "familyMemberID": 16,
+                "name": "mother2",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "1988-01-31"
+            },
+            {
+                "familyMemberID": 17,
+                "name": "father2",
+                "gender": "M",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 50000,
+                "DOB": "1988-01-31"
+            },
+            {
+                "familyMemberID": 18,
+                "name": "child",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2005-02-28"
+            },
+            {
+                "familyMemberID": 19,
+                "name": "kid",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2016-02-28"
+            }
+        ]
+    },
+    {
+        "householdID": 10,
+        "householdType": "hdb",
+        "familyMembers": [
+            {
+                "familyMemberID": 24,
+                "name": "elderly",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "unemployed",
+                "annualIncome": 0,
+                "DOB": "1945-01-31"
+            }
+        ]
+    },
+    {
+        "householdID": 11,
+        "householdType": "condominium",
+        "familyMembers": [
+            {
+                "familyMemberID": 22,
+                "name": "mary",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 100000,
+                "DOB": "1990-01-31"
+            },
+            {
+                "familyMemberID": 23,
+                "name": "john",
+                "gender": "F",
+                "maritalStatus": "married",
+                "occupationType": "employed",
+                "annualIncome": 100000,
+                "DOB": "1988-01-31"
+            },
+            {
+                "familyMemberID": 25,
+                "name": "child",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "student",
+                "annualIncome": 0,
+                "DOB": "2005-02-28"
+            },
+            {
+                "familyMemberID": 29,
+                "name": "elderly2",
+                "gender": "M",
+                "maritalStatus": "single",
+                "occupationType": "unemployed",
+                "annualIncome": 0,
+                "DOB": "1971-01-31"
+            }
+        ]
+    }
 ]
 ```
 
@@ -204,39 +320,165 @@ Remarks:
 - child should be age of > 5 and less than the age 16 and 18 for Student Encouragement Bonus and Family Togetherness Scheme respectively
 
 #### sameple output
+Note: size=5, total_income=200000
 ```json
 {
-    "studentEncouragementBonus": [],
-    "familyTogethernes": [],
-    "elderBonus": [],
+    "studentEncouragementBonus": [
+        {
+            "householdID": 9,
+            "householdType": "hdb",
+            "familyMembers": [
+                {
+                    "familyMemberID": 18,
+                    "name": "child",
+                    "gender": "M",
+                    "maritalStatus": "single",
+                    "occupationType": "student",
+                    "annualIncome": 0,
+                    "DOB": "2005-02-28"
+                }
+            ]
+        }
+    ],
+    "familyTogethernes": [
+        {
+            "householdID": 6,
+            "householdType": "landed",
+            "familyMembers": [
+                {
+                    "familyMemberID": 9,
+                    "name": "mother",
+                    "gender": "F",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 50000,
+                    "DOB": "2000-01-31"
+                },
+                {
+                    "familyMemberID": 10,
+                    "name": "father",
+                    "gender": "F",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 50000,
+                    "DOB": "2000-01-31"
+                }
+            ]
+        },
+        {
+            "householdID": 9,
+            "householdType": "hdb",
+            "familyMembers": [
+                {
+                    "familyMemberID": 16,
+                    "name": "mother2",
+                    "gender": "F",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 50000,
+                    "DOB": "1988-01-31"
+                },
+                {
+                    "familyMemberID": 17,
+                    "name": "father2",
+                    "gender": "M",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 50000,
+                    "DOB": "1988-01-31"
+                }
+            ]
+        },
+        {
+            "householdID": 11,
+            "householdType": "condominium",
+            "familyMembers": [
+                {
+                    "familyMemberID": 22,
+                    "name": "mary",
+                    "gender": "F",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 100000,
+                    "DOB": "1990-01-31"
+                },
+                {
+                    "familyMemberID": 23,
+                    "name": "john",
+                    "gender": "F",
+                    "maritalStatus": "married",
+                    "occupationType": "employed",
+                    "annualIncome": 100000,
+                    "DOB": "1988-01-31"
+                }
+            ]
+        }
+    ],
+    "elderBonus": [
+        {
+            "householdID": 10,
+            "householdType": "hdb",
+            "familyMembers": [
+                {
+                    "familyMemberID": 24,
+                    "name": "elderly",
+                    "gender": "M",
+                    "maritalStatus": "single",
+                    "occupationType": "unemployed",
+                    "annualIncome": 0,
+                    "DOB": "1945-01-31"
+                }
+            ]
+        },
+        {
+            "householdID": 11,
+            "householdType": "condominium",
+            "familyMembers": [
+                {
+                    "familyMemberID": 29,
+                    "name": "elderly2",
+                    "gender": "M",
+                    "maritalStatus": "single",
+                    "occupationType": "unemployed",
+                    "annualIncome": 0,
+                    "DOB": "1971-01-31"
+                }
+            ]
+        }
+    ],
     "babySunshunGrant": [
-      {
-        "householdID": 11,
-        "householdType": "condominium",
-        "familyMembers": [
-          {
-            "familyMemberID": 22,
-            "name": "mary",
-            "gender": "F",
-            "maritalStatus": "married",
-            "occupationType": "employed",
-            "annualIncome": 100000,
-            "DOB": "1950-01-31"
-          }
-        ]
-      }
+        {
+            "householdID": 9,
+            "householdType": "hdb",
+            "familyMembers": [
+                {
+                    "familyMemberID": 19,
+                    "name": "kid",
+                    "gender": "M",
+                    "maritalStatus": "single",
+                    "occupationType": "student",
+                    "annualIncome": 0,
+                    "DOB": "2016-02-28"
+                }
+            ]
+        }
     ],
     "yoloGstGrant": [
-      {
-        "householdID": 6,
-        "householdType": "landed",
-        "totalAnnualIncome": 100000
-      },
-      {
-        "householdID": 8,
-        "householdType": "hdb",
-        "totalAnnualIncome": 100000
-      },
+        {
+            "householdID": 6,
+            "householdType": "landed",
+            "totalAnnualIncome": 100000
+        },
+        {
+            "householdID": 9,
+            "householdType": "hdb",
+            "totalAnnualIncome": 100000
+        },
+        {
+            "householdID": 10,
+            "householdType": "hdb",
+            "totalAnnualIncome": 0
+        }
     ]
 }
 ```
