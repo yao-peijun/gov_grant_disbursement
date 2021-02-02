@@ -186,7 +186,7 @@ Remarks:
 
 ### 3. Search for households and recipients of grant disbursement
 
-#### Endpoint: /api/grants?household=<size>&totalIncome=<income>
+#### Endpoint: /api/grants?household=size&totalIncome=income
 
 #### Assumptions
 - household display should met requirement of "household size" and "total income" provided and filtered based on the criteria provided
