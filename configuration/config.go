@@ -84,7 +84,7 @@ func GrantSchemesAge() GrantSchemesAgeStruct {
 	return grantSchemes
 }
 
-// GrantSchemesAnnualIncome :Grant scheme annual income limit
+// GrantSchemesAnnualIncome : Grant scheme annual income limit
 func GrantSchemesAnnualIncome() GrantSchemesAnnualIncomeStruct {
 	grantSchemes := GrantSchemesAnnualIncomeStruct{
 		StudentEncouragementBonus: 150000,

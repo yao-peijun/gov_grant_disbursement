@@ -1,16 +1,14 @@
 package controllers
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
-	"strings"
-
-	config "gov_grant_disbursement/configuration"
-	"gov_grant_disbursement/helpers"
-	"gov_grant_disbursement/models"
 
 	"github.com/astaxie/beego"
+
+	config "gov_grant_disbursement/configuration"
+	"gov_grant_disbursement/database"
+	"gov_grant_disbursement/helpers"
+	"gov_grant_disbursement/models"
 )
 
 // GrantController : Grant Controller
@@ -18,184 +16,250 @@ type GrantController struct {
 	beego.Controller
 }
 
-// CreateHousehold : Create Household
-func (c *GrantController) CreateHousehold() {
-	body := models.HouseholdInput{}
-
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &body); err != nil {
-		c.CustomAbort(http.StatusBadRequest, config.ErrorMsg().General)
-	}
-
-	if !helpers.Includes(body.HouseholdType, config.HouseholdArray()) {
-		c.CustomAbort(http.StatusBadRequest, config.ErrorMsg().InvalidHousehold)
-	}
-
-	// create record in db
-	res, err := helpers.SQLExec(
-		"INSERT into household(householdType) values(?)",
-		strings.ToLower(body.HouseholdType),
-	)
-
-	if err != nil {
-		c.CustomAbort(http.StatusBadRequest, err.Error())
-	}
-
-	count, err := res.RowsAffected()
-	id, err := res.LastInsertId()
-
-	// return result
-	result := map[string]interface{}{
-		"id":          id,
-		"rowAffected": count,
-	}
-
-	if err != nil {
-		result = map[string]interface{}{
-			"error": err.Error(),
-		}
-	}
-
-	c.Data["json"] = &result
-	c.ServeJSON()
-}
-
-// AddFamilyMember : Add family member to household
-func (c *GrantController) AddFamilyMember() {
-	body := models.FamilyMemberInput{}
-	householdID := c.Ctx.Input.Param(":householdID")
-
-	// if yes, check proceed to check inputs
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &body); err != nil {
-		c.CustomAbort(http.StatusBadRequest, config.ErrorMsg().General)
-	}
-
-	// check input fields
-	errorMsg, err := helpers.CheckFamilyMemberInputField(body)
-	if err {
-		c.CustomAbort(http.StatusBadRequest, errorMsg)
-	}
-
-	// create record in db
-	res, err2 := helpers.SQLExec(
-		`INSERT into familyMember(householdID, name, gender, maritalStatus, 
-			spouse, occupationType, DOB,annualIncome) values(?,?,?,?,?,?,?,?)`,
-		householdID,
-		strings.ToLower(body.Name),
-		strings.ToUpper(body.Gender),
-		strings.ToLower(body.MaritalStatus),
-		strings.ToLower(body.Spouse),
-		strings.ToLower(body.OccupationType),
-		helpers.SQLDateFormat(body.DOB),
-		body.AnnualIncome,
-	)
-
-	if err2 != nil {
-		c.CustomAbort(http.StatusBadRequest, err2.Error())
-	}
-
-	count, err2 := res.RowsAffected()
-	id, err2 := res.LastInsertId()
-
-	// return result
-	result := map[string]interface{}{
-		"id":          id,
-		"rowAffected": count,
-	}
-
-	if err2 != nil {
-		result = map[string]interface{}{
-			"error": err2.Error(),
-		}
-	}
-
-	c.Data["json"] = &result
-	c.ServeJSON()
-}
-
-// GetHouseHold : Get a household with family members
-func (c *GrantController) GetHouseHold() {
-	householdID := c.Ctx.Input.Param(":householdID")
-
-	// query database
-	results := householdDetailsBuilder(c, householdID)
-
-	// return results
-	c.Data["json"] = &results
-	c.ServeJSON()
-}
-
-// GetHouseHolds : Get all households with family members
-func (c *GrantController) GetHouseHolds() {
-	results := householdDetailsBuilder(c, nil)
-	c.Data["json"] = &results
-	c.ServeJSON()
-}
+/********
+read APIs
+*********/
 
 // SearchGrant : Seach grant(s) based on household size and total income
 func (c *GrantController) SearchGrant() {
 	household := c.Ctx.Input.Query("household")
 	totalIncome := c.Ctx.Input.Query("totalIncome")
-	result := grantBuilder(c, household, totalIncome)
-	c.Data["json"] = &result
-	c.ServeJSON()
-}
+	result := models.GrantOutput{}
 
-// DeleteHousehold : Delete household and family members
-func (c *GrantController) DeleteHousehold() {
-	householdID := c.Ctx.Input.Param(":householdID")
+	// student encouragement bonus (5 < age <= 16) and annual income less than 150,000
+	rows, err := database.SQLQuery(
+		`SELECT 				
+			json_arrayagg(
+				json_object(
+					'householdID', h.householdID, 
+					'householdType', h.householdType,
+					'familyMembers', (
+						SELECT json_arrayagg(
+							json_object(
+								'familyMemberID', f.familyMemberID,
+								'name', f.name, 
+								'gender', f.gender, 
+								'maritalStatus', f.maritalStatus, 
+								'occupationType', f.occupationType, 
+								'DOB', f.DOB, 
+								'annualIncome', f.annualIncome
+							)
+						)
+						FROM familyMember f
+						WHERE f.householdID = h.householdID AND DATEDIFF(CURDATE(), f.DOB)/365<=? 
+						AND DATEDIFF(CURDATE(), f.DOB)/365>?
+					)
+				)
+			)
+		FROM  household h
 
-	// delete from db
-	res, err := helpers.SQLExec(
-		"DELETE from household where householdID=?",
-		householdID,
+		WHERE
+
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			GROUP BY f.householdID
+			HAVING COUNT(f.householdID) <= ? AND SUM(f.annualIncome) <= ? AND SUM(f.annualIncome) <= ?
+		)
+
+		AND
+
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			WHERE DATEDIFF(CURDATE(), f.DOB)/365<=? AND DATEDIFF(CURDATE(), f.DOB)/365>?)`,
+		config.GrantSchemesAge().StudentEncouragementBonus,
+		config.GrantSchemesAge().BabySunshunGrant,
+		household,
+		totalIncome,
+		config.GrantSchemesAnnualIncome().StudentEncouragementBonus,
+		config.GrantSchemesAge().StudentEncouragementBonus,
+		config.GrantSchemesAge().BabySunshunGrant,
 	)
 	if err != nil {
 		c.CustomAbort(http.StatusBadRequest, err.Error())
 	}
+	result.StudentEncouragementBonus = helpers.HouseholdOutputDetailsBuilder(rows)
 
-	count, err := res.RowsAffected()
+	// family togetherness scheme (5 < age <= 18 and wife/husband stay in the same household)
+	rows, err = database.SQLQuery(
+		`SELECT
+			json_arrayagg(
+				json_object(
+					'householdID', h.householdID, 
+					'householdType', h.householdType,
+					'familyMembers', (
+						SELECT json_arrayagg(
+							json_object(
+								'familyMemberID', f.familyMemberID,
+								'name', f.name, 
+								'gender', f.gender, 
+								'maritalStatus', f.maritalStatus, 
+								'occupationType', f.occupationType, 
+								'DOB', f.DOB, 
+								'annualIncome', f.annualIncome
+							)
+						)
+						FROM familyMember f, familyMember f2
+						WHERE f.householdID = h.householdID AND f2.householdID = h.householdID AND
+						(f.name = f2.spouse AND f2.name = f.spouse OR f.familyMemberID = f2.spouse AND f2.familyMemberID = f.spouse)
+					)
+				)
+			)
+		FROM  household h
+			
+		WHERE
 
-	// return result
-	result := map[string]interface{}{
-		"rowAffected": count,
-	}
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			GROUP BY f.householdID
+			HAVING COUNT(f.householdID) <= ? AND SUM(f.annualIncome) <= ?
+		)
 
-	if err != nil {
-		result = map[string]interface{}{
-			"error": err.Error(),
-		}
-	}
+		AND
 
-	c.Data["json"] = &result
-	c.ServeJSON()
-}
+		h.householdID IN (SELECT f.householdID
+			FROM familyMember f
+			INNER JOIN familyMember f2 ON
+			(f.name = f2.spouse AND f2.name = f.spouse) OR
+			(f.familyMemberID = f2.spouse AND f2.familyMemberID = f.spouse)
+		)
 
-// DeleteFamilyMember : Delete family member from household
-func (c *GrantController) DeleteFamilyMember() {
-	familyMemeberID := c.Ctx.Input.Param(":familyMemberID")
+		AND
 
-	// delete from db
-	res, err := helpers.SQLExec(
-		"DELETE from familyMember where familyMemberID=?",
-		familyMemeberID,
+		h.householdID IN (SELECT f.householdID
+			FROM familyMember f
+			WHERE DATEDIFF(CURDATE(), f.DOB)/365<=? AND DATEDIFF(CURDATE(), f.DOB)/365>?)`,
+		household,
+		totalIncome,
+		config.GrantSchemesAge().FamilyTogetherness,
+		config.GrantSchemesAge().BabySunshunGrant,
 	)
 	if err != nil {
-		fmt.Println(err)
 		c.CustomAbort(http.StatusBadRequest, err.Error())
 	}
+	result.FamilyTogetherness = helpers.HouseholdOutputDetailsBuilder(rows)
 
-	count, err := res.RowsAffected()
+	// elderly bonus (age >= 50)
+	rows, err = database.SQLQuery(
+		`SELECT
+			json_arrayagg(
+				json_object(
+					'householdID', h.householdID, 
+					'householdType', h.householdType,
+					'familyMembers', (
+						SELECT json_arrayagg(
+							json_object(
+								'familyMemberID', f.familyMemberID,
+								'name', f.name, 
+								'gender', f.gender, 
+								'maritalStatus', f.maritalStatus, 
+								'occupationType', f.occupationType, 
+								'DOB', f.DOB, 
+								'annualIncome', f.annualIncome
+							)
+						)
+						FROM familyMember f
+						WHERE f.householdID = h.householdID AND DATEDIFF(CURDATE(), f.DOB)/365>=?
+					)
+				)
+			)
 
-	// return result
-	result := map[string]interface{}{
-		"rowAffected": count,
-	}
+		FROM  household h
 
+		WHERE
+				
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			GROUP BY f.householdID
+			HAVING COUNT(f.householdID) <= ? AND SUM(f.annualIncome) <= ?
+		)
+
+		AND
+
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			WHERE DATEDIFF(CURDATE(), f.DOB)/365>=?)`,
+		config.GrantSchemesAge().ElderBonusUpper,
+		household,
+		totalIncome,
+		config.GrantSchemesAge().ElderBonusUpper,
+	)
 	if err != nil {
-		result = map[string]interface{}{
-			"error": err.Error(),
-		}
+		c.CustomAbort(http.StatusBadRequest, err.Error())
 	}
+	result.ElderBonus = helpers.HouseholdOutputDetailsBuilder(rows)
+
+	// baby sunshine grant (age <= 5)
+	rows, err = database.SQLQuery(
+		`SELECT
+			json_arrayagg(
+				json_object(
+					'householdID', h.householdID, 
+					'householdType', h.householdType,
+					'familyMembers', (
+						SELECT json_arrayagg(
+							json_object(
+								'familyMemberID', f.familyMemberID,
+								'name', f.name, 
+								'gender', f.gender, 
+								'maritalStatus', f.maritalStatus, 
+								'occupationType', f.occupationType, 
+								'DOB', f.DOB, 
+								'annualIncome', f.annualIncome
+							)
+						)
+						FROM familyMember f
+						WHERE f.householdID = h.householdID AND DATEDIFF(CURDATE(), f.DOB)/365<=?
+					)
+				)
+			)
+
+		FROM  household h
+
+		WHERE
+				
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			GROUP BY f.householdID
+			HAVING COUNT(f.householdID) <= ? AND SUM(f.annualIncome) <= ?
+		)
+
+		AND
+
+		h.householdID IN (
+			SELECT f.householdID
+			FROM familyMember f
+			WHERE DATEDIFF(CURDATE(), f.DOB)/365<=?)`,
+		config.GrantSchemesAge().BabySunshunGrant,
+		household,
+		totalIncome,
+		config.GrantSchemesAge().BabySunshunGrant,
+	)
+	if err != nil {
+		c.CustomAbort(http.StatusBadRequest, err.Error())
+	}
+	result.BabySunshunGrant = helpers.HouseholdOutputDetailsBuilder(rows)
+
+	// yolo (total annual income <= 100,000)
+	rows, err = database.SQLQuery(
+		`SELECT h.householdID, h.householdType, SUM(f.annualIncome) AS 'totalAnnualIncome'
+		FROM familyMember f
+		INNER JOIN household h ON f.householdID = h.householdID
+		GROUP BY f.householdID
+		HAVING COUNT(f.householdID) <= ? AND SUM(f.annualIncome) <= ? AND SUM(f.annualIncome) <= ?`,
+		household,
+		totalIncome,
+		config.GrantSchemesAnnualIncome().Yolo,
+	)
+	if err != nil {
+		c.CustomAbort(http.StatusBadRequest, err.Error())
+	}
+	result.YoloGstGrant = helpers.HouseholOutputdBuilder(rows)
 
 	c.Data["json"] = &result
 	c.ServeJSON()

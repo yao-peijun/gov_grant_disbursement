@@ -7,16 +7,23 @@ import (
 )
 
 func init() {
-	// create record(s)
-	beego.Router("/api/household", &controllers.GrantController{}, "post:CreateHousehold")
-	beego.Router("/api/household/:householdID/familyMember", &controllers.GrantController{}, "post:AddFamilyMember")
+	household()
+	familyMember()
+	grant()
+}
 
-	// read record(s)
-	beego.Router("/api/household/:householdID", &controllers.GrantController{}, "get:GetHouseHold")
-	beego.Router("/api/household/all", &controllers.GrantController{}, "get:GetHouseHolds")
+func household() {
+	beego.Router("/api/household", &controllers.HouseholdController{}, "post:CreateHousehold")
+	beego.Router("/api/household/:householdID", &controllers.HouseholdController{}, "get:GetHouseHold")
+	beego.Router("/api/household/all", &controllers.HouseholdController{}, "get:GetHouseHolds")
+	beego.Router("/api/household/:householdID", &controllers.HouseholdController{}, "delete:DeleteHousehold")
+}
+
+func familyMember() {
+	beego.Router("/api/household/:householdID/familyMember", &controllers.FamilyMemberController{}, "post:AddFamilyMember")
+	beego.Router("/api/familyMember/:familyMemberID", &controllers.FamilyMemberController{}, "delete:DeleteFamilyMember")
+}
+
+func grant() {
 	beego.Router("/api/grants/?:household/?:totalIncome", &controllers.GrantController{}, "get:SearchGrant")
-
-	// delete record(s)
-	beego.Router("/api/household/:householdID", &controllers.GrantController{}, "delete:DeleteHousehold")
-	beego.Router("/api/familyMember/:familyMemberID", &controllers.GrantController{}, "delete:DeleteFamilyMember")
 }
