@@ -14,7 +14,7 @@ import (
 	"github.com/astaxie/beego"
 )
 
-// FamilyMemberController : FamilyMember Controller
+// FamilyMemberController : FamilyMember Controllers
 type FamilyMemberController struct {
 	beego.Controller
 }
